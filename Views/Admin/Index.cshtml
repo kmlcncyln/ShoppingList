@@ -21,16 +21,21 @@
     </button>
 
     <a href="~/User/Login" class="btn btn-secondary">Back to Login</a>
+
+
+    <a href="~/Products/Shop" class="btn btn-secondary">See Products</a>
 </div>
 <h3>Products</h3>
 <ul>
     @foreach (var product in ViewBag.Products)
     {
         <li>
-            @product.Name - $@product.Price - Category: @product.Category.Name
-            @*<a asp-action="DeleteProduct" asp-route-id="@product.Id">Delete</a>*@
+            <div class="d-flex align-items-center">
+                <img src="@product.ImageUrl" alt="Product Image" class="mr-2" style="max-width: 50px;">
+                <span>@product.Name - $@product.Price - Category: @product.Category.Name</span>
+            </div>
             <form method="post" asp-action="DeleteProduct" asp-route-id="@product.Id">
-            <button type="submit">Delete</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
             </form>
             <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editProductModal_@product.Id">
                 Edit
@@ -45,7 +50,7 @@
     {
         <li>
             @category.Name
-            @*<a asp-action="DeleteCategory" asp-route-id="@category.Id">Delete</a>*@
+            
             <form method="post" asp-action="DeleteCategory" asp-route-id="@category.Id">
             <button type="submit">Delete</button>
             </form>
