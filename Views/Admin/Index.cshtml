@@ -1,0 +1,235 @@
+﻿@model IEnumerable<Category>
+
+
+
+<div class="container text-center mt-4">
+    <h2 class="display-4">Admin Panel</h2>
+    <!-- Diğer içerikler -->
+</div>
+
+<!-- Diğer script ve stil bağlantıları -->
+
+
+<div class="d-flex justify-content-between mb-3">
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">
+    Add Product
+    </button>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategoryModal">
+    Add Category
+    </button>
+
+    <a href="~/User/Login" class="btn btn-secondary">Back to Login</a>
+</div>
+<h3>Products</h3>
+<ul>
+    @foreach (var product in ViewBag.Products)
+    {
+        <li>
+            @product.Name - $@product.Price - Category: @product.Category.Name
+            @*<a asp-action="DeleteProduct" asp-route-id="@product.Id">Delete</a>*@
+            <form method="post" asp-action="DeleteProduct" asp-route-id="@product.Id">
+            <button type="submit">Delete</button>
+            </form>
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editProductModal_@product.Id">
+                Edit
+            </button>
+        </li>
+    }
+</ul>
+
+<h3>Categories</h3>
+<ul>
+    @foreach (var category in ViewBag.Categories)
+    {
+        <li>
+            @category.Name
+            @*<a asp-action="DeleteCategory" asp-route-id="@category.Id">Delete</a>*@
+            <form method="post" asp-action="DeleteCategory" asp-route-id="@category.Id">
+            <button type="submit">Delete</button>
+            </form>
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editCategoryModal_@category.Id">
+                Edit
+            </button>
+        </li>
+    }
+</ul>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="AddProduct">
+                    <div class="form-group">
+                        <label for="productName">Product Name:</label>
+                        <input type="text" class="form-control" id="productName" name="productName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Category:</label>
+                        <select class="form-control" id="productCategory" name="category" required>
+                            <option value="">Select a category</option>
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                <option value="@category.Name">@category.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="productPrice">Product Price:</label>
+                        <input type="number" class="form-control" id="productPrice" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productImageUrl">Image URL:</label>
+                        <input type="text" class="form-control" id="productImageUrl" name="imgUrl" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="AddCategory">
+                    <div class="form-group">
+                        <label for="categoryName">Category Name:</label>
+                        <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Product Modals -->
+@foreach (var product in ViewBag.Products)
+{
+    <div class="modal fade" id="editProductModal_@product.Id" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel_@product.Id" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel_@product.Id">Edit Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-action="EditProduct" asp-route-id="@product.Id">
+                        <div class="form-group">
+                            <label for="editProductName_@product.Id">Product Name:</label>
+                            <input type="text" class="form-control" id="editProductName_@product.Id" name="Name" value="@product.Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editProductPrice_@product.Id">Product Price:</label>
+                            <input type="number" class="form-control" id="editProductPrice_@product.Id" name="Price" value="@product.Price" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editProductCategory_@product.Id">Category:</label>
+                            <select class="form-control" id="editProductCategory_@product.Id" name="CategoryId" required>
+                                <option value="">Select a category</option>
+                                @foreach (var category in ViewBag.Categories)
+                                {
+                                    var isSelected = product.CategoryId == category.Id ? "selected" : "";
+                                    <option value="@category.Id" selected="@isSelected">@category.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editProductImageUrl_@product.Id">Image URL:</label>
+                            <input type="text" class="form-control" id="editProductImageUrl_@product.Id" name="ImageUrl" value="@product.ImageUrl">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<!-- Edit Category Modals -->
+@foreach (var category in ViewBag.Categories)
+{
+    <div class="modal fade" id="editCategoryModal_@category.Id" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel_@category.Id" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCategoryModalLabel_@category.Id">Edit Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-action="EditCategory" asp-route-id="@category.Id">
+                        <div class="form-group">
+                            <label for="editCategoryName_@category.Id">Category Name:</label>
+                            <input type="text" class="form-control" id="editCategoryName_@category.Id" name="Name" value="@category.Name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Function to open the modal
+        function openModal(modalId) {
+            $(modalId).modal('show');
+        }
+
+        // Function to close the modal
+        function closeModal(modalId) {
+            $(modalId).modal('hide');
+        }
+
+        // Add Product Modal
+        $('#addProductBtn').on('click', function () {
+            openModal('#addProductModal');
+        });
+
+        // Add Category Modal
+        $('#addCategoryBtn').on('click', function () {
+            openModal('#addCategoryModal');
+        });
+
+        // Edit Product Modals
+        $('[data-target^="#editProductModal_"]').on('click', function () {
+            var modalId = $(this).data('target');
+            openModal(modalId);
+        });
+
+        // Edit Category Modals
+        $('[data-target^="#editCategoryModal_"]').on('click', function () {
+            var modalId = $(this).data('target');
+            openModal(modalId);
+        });
+
+        // Close Modals
+        $('.modal').on('hidden.bs.modal', function () {
+            closeModal(this);
+        });
+    });
+</script>

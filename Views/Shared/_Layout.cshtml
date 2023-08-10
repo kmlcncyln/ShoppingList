@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>E-Commerce Store</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand mx-auto" href="#">
+        <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" alt="Shopping Bag" width="100" height="100">
+        <h1 class="d-inline-block ml-3">My E-Commerce Store</h1>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link link text-black show display-4" asp-controller="ShoppingCart" asp-action="Index">
+                    <span class="mobi-mbri mobi-mbri-shopping-bag mbr-iconfont mbr-iconfont-btn">
+                        <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" alt="Shopping Bag" width="100" height="100">
+                    </span>
+                </a>
+            </li>
+        </ul>
+        @RenderSection("AdditionalButton", required: false)
+    </div>
+</nav>
+
+<div class="container mt-4">
+    @RenderBody()
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+﻿@model UserShoppingList
+
+<h1>Shopping</h1>
+
+<div>
+    <h3>List Name: @Model.Name</h3>
+    <!-- Diğer shopping list özellikleri -->
+</div>
+
+<h2>Items</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Image</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Select</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td><img src="@item.Product.ImageUrl" class="card-img-top" alt="Product Image" style="max-width: 100px; max-height: 100px;"></td>
+                <td>@item.Description</td>
+                <td id="price_@item.Id">$@item.Product.Price</td>
+                <td>
+                    <input type="checkbox" class="item-checkbox" value="@item.Id">
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Diğer içerikler burada yer alıyor... -->
+
+<div class="mb-3">
+    <button id="completeShoppingBtn" class="btn btn-primary">Complete Shopping</button>
+    <a href="@Url.Action("ShowList", "ShoppingList", new { id = Model.Id })" class="btn btn-secondary">Go Back</a>
+</div>
+
+<div id="totalPriceDiv" class="mb-3">
+    Total Price: $0.00
+</div>
+
+<script>
+    $(document).ready(function () {
+        updateTotalPrice(); // Sayfa yüklendiğinde toplam fiyatı güncelle
+
+        $('.item-checkbox').change(function () {
+            updateTotalPrice(); // Checkbox değiştiğinde toplam fiyatı güncelle
+        });
+
+        $('#completeShoppingBtn').click(function () {
+            var selectedItems = $('.item-checkbox:checked').map(function () {
+                return $(this).val();
+            }).get();
+
+            if (selectedItems.length > 0) {
+                // AJAX isteğiyle seçilen ürünleri listeden kaldır
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("CompleteShopping", "ShoppingList")',
+                    data: { listId: @Model.Id, selectedItems: selectedItems },
+                    success: function () {
+                        // İşlem başarılıysa Index sayfasına yönlendir
+                        window.location.href = '@Url.Action("Index", "ShoppingList")';
+                    },
+                    error: function () {
+                        console.log('Error while completing shopping.');
+                    }
+                });
+            } else {
+                alert('Please select items before completing shopping.');
+            }
+        });
+    });
+
+        function updateTotalPrice() {
+        var totalPrice = 0;
+        $('.item-checkbox:checked').each(function () {
+        var itemId = $(this).val();
+        var price = parseFloat($('#price_' + itemId).text().replace('$', ''));
+        totalPrice += price;
+        });
+        $('#totalPriceDiv').text('Total Price: $' + totalPrice.toFixed(2));
+        }
+
+</script>

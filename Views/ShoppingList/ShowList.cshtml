@@ -1,0 +1,114 @@
+﻿@model UserShoppingList
+
+<h1>Shopping List Details</h1>
+
+<div>
+    <h3>List Name: @Model.Name</h3>
+    <!-- Diğer shopping list özellikleri -->
+</div>
+
+<h2>Add New Item</h2>
+<form method="post" asp-action="AddItemUserShoppingList">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="form-group">
+        <label for="productId">Product:</label>
+        <select class="form-control" id="productId" name="ProductId">
+            @foreach (var product in ViewBag.Products)
+            {
+                <option value="@product.Id">@product.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <input type="text" class="form-control" id="description" name="Description">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Item</button>
+</form>
+
+    <a href="@Url.Action("Index", "ShoppingList")" class="btn btn-secondary">Go Back</a>
+
+    <a href="@Url.Action("ShowListShopping", "ShoppingList", new { id = Model.Id })" class="btn btn-success">Go Shopping</a>
+ 
+
+<h2>Items</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Image</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+    {
+    <tr>
+        <td>@item.Product.Name</td>
+        <td><img src="@item.Product.ImageUrl" class="card-img-top" alt="Product Image" style="max-width: 100px; max-height: 100px;"></td>
+        <td>
+            @item.Description
+            <a href="#" class="btn btn-link btn-sm edit-description-link" data-listid="@Model.Id" data-itemid="@item.Id">Edit Description</a>
+        </td>
+        <td>
+            <form method="post" asp-action="RemoveItem">
+                <input type="hidden" name="listId" value="@Model.Id" />
+                <input type="hidden" name="itemId" value="@item.Id" />
+                <button type="submit" class="btn btn-danger">Remove Item</button>
+            </form>
+        </td>
+    </tr>
+    }
+  
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Edit Description Modal -->
+<div class="modal fade" id="editDescriptionModal" tabindex="-1" role="dialog" aria-labelledby="editDescriptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDescriptionModalLabel">Edit Description</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editDescriptionForm" action="@Url.Action("EditDescription", "ShoppingList")" method="post">
+                    <input type="hidden" name="listId" id="editListId" />
+                    <input type="hidden" name="itemId" id="editItemId" />
+                    <div class="form-group">
+                        <label for="newDescription">New Description:</label>
+                        <input type="text" class="form-control" id="newDescription" name="newDescription" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+                <button id="editDescriptionSubmit" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.edit-description-link').click(function () {
+            var listId = $(this).data('listid');
+            var itemId = $(this).data('itemid');
+            
+            $('#editListId').val(listId);
+            $('#editItemId').val(itemId);
+            
+            $('#editDescriptionModal').modal('show');
+        });
+
+        $('#editDescriptionSubmit').click(function () {
+            // Submit the form
+            $('#editDescriptionForm').submit();
+        });
+    });
+</script>
