@@ -50,9 +50,8 @@
     {
         <li>
             @category.Name
-            
-            <form method="post" asp-action="DeleteCategory" asp-route-id="@category.Id">
-            <button type="submit">Delete</button>
+            <form method="post" asp-action="DeleteProduct" asp-route-id="@category.Id">
+                <button type="submit" class="btn btn-danger">Delete</button>
             </form>
             <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editCategoryModal_@category.Id">
                 Edit
